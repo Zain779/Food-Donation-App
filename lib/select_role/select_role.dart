@@ -24,14 +24,14 @@ class _SelectRoleState extends State<SelectRole> {
         backgroundColor: const Color(0xfff7f7f7),
         appBar: AppBar(
           // automaticallyImplyLeading: false,
-
+          leading: null,
           title: const Text('Welcome'),
           centerTitle: true,
           backgroundColor: const Color(0xff6943ba),
 
         ),
 
-        body: Padding(
+        body: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Center(
             child:  Padding(
@@ -56,15 +56,79 @@ class _SelectRoleState extends State<SelectRole> {
                         ),
                       ),
                     ),
-                    const SizedBox(
-                      height: 15,
-                    ),
+                    // const SizedBox(
+                    //   height: 15,
+                    // ),
+                    // InkWell(
+                    //   onTap: (){
+                    //     Navigator.push(context,
+                    //         MaterialPageRoute(builder: (context)=> const LoginScreen()));
+                    //   },
+                    //   child: Button(title: 'LogIn as Donar'),
+                    // ),
+                    // const SizedBox(height: 10,),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.center,
+                    //   children: [
+                    //     const Text("Don't have an account?",
+                    //       style: TextStyle(
+                    //           fontSize: 16,
+                    //           fontFamily: 'Rubik Regular',
+                    //           color: Colors.black
+                    //       ),
+                    //     ),
+                    //     InkWell(
+                    //       onTap: (){
+                    //         Navigator.push(context,
+                    //             MaterialPageRoute(builder: (context) => const SignUpScreen()));
+                    //       },
+                    //
+                    //       child: const Text(' Sign Up',
+                    //         style: TextStyle(
+                    //             fontSize: 18,
+                    //             fontFamily: 'Rubik Regular',
+                    //             fontWeight: FontWeight.bold,
+                    //             color: Color(0xff6943ba)
+                    //         ),
+                    //       ),
+                    //     )
+                    //   ],
+                    // ),
+                    // const SizedBox(
+                    //   height: 10,
+                    // ),
+                    // const Center(
+                    //   child: Text(' --or--',
+                    //     style: TextStyle(
+                    //         fontSize: 26,
+                    //         fontFamily: 'Rubik Regular',
+                    //         fontWeight: FontWeight.bold,
+                    //         color: Colors.black
+                    //     ),
+                    //   ),
+                    // ),
+                    // const SizedBox(
+                    //   height: 10,
+                    // ),
+                    // const Center(
+                    //   child: Text('Search for Food',
+                    //     style: TextStyle(
+                    //         fontSize: 20,
+                    //         fontFamily: 'Rubik Regular',
+                    //         color: Colors.black
+                    //     ),
+                    //   ),
+                    // ),
+                    // const SizedBox(
+                    //   height: 15,
+                    // ),
+
                     InkWell(
                       onTap: (){
                         Navigator.push(context,
-                            MaterialPageRoute(builder: (context)=> const LoginScreen()));
+                            MaterialPageRoute(builder: (context)=>const LoginScreen()));
                       },
-                      child: Button(title: 'LogIn as Donar'),
+                      child: const Button(title: 'Log In',),
                     ),
                     const SizedBox(height: 10,),
                     Row(
@@ -81,70 +145,6 @@ class _SelectRoleState extends State<SelectRole> {
                           onTap: (){
                             Navigator.push(context,
                                 MaterialPageRoute(builder: (context) => const SignUpScreen()));
-                          },
-
-                          child: const Text(' Sign Up',
-                            style: TextStyle(
-                                fontSize: 18,
-                                fontFamily: 'Rubik Regular',
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xff6943ba)
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    const Center(
-                      child: Text(' --or--',
-                        style: TextStyle(
-                            fontSize: 26,
-                            fontFamily: 'Rubik Regular',
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    const Center(
-                      child: Text('Search for Food',
-                        style: TextStyle(
-                            fontSize: 20,
-                            fontFamily: 'Rubik Regular',
-                            color: Colors.black
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-
-                    InkWell(
-                      onTap: (){
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context)=>const LoginScreenReceiver()));
-                      },
-                      child: Button(title: 'LogIn to get Food'),
-                    ),
-                    const SizedBox(height: 10,),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text("Don't have an account?",
-                          style: TextStyle(
-                              fontSize: 16,
-                              fontFamily: 'Rubik Regular',
-                              color: Colors.black
-                          ),
-                        ),
-                        InkWell(
-                          onTap: (){
-                            Navigator.push(context,
-                                MaterialPageRoute(builder: (context) => const SignUpScreenReceiver()));
                           },
 
                           child: const Text(' Sign Up',

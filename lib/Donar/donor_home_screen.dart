@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:food_donation_app/Profile/profile.dart';
+import 'package:food_donation_app/Screens/donor_shared_food_screen.dart';
 import 'package:food_donation_app/Utils/utils.dart';
 import 'package:food_donation_app/button.dart';
 import 'package:food_donation_app/select_role/select_role.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../share_food.dart';
-
 
 class DonorHomeScreen extends StatefulWidget {
   bool? isDonor;
@@ -31,15 +32,21 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> {
           centerTitle: true,
           backgroundColor: const Color(0xff6943ba),
           actions: [
-            IconButton(onPressed: (){
-              auth.signOut().then((value) {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context)=>const SelectRole()));
-              }).onError((error, stackTrace) {
-                utils().toastMessage(error.toString());
-              });
-            }, icon: const Icon(Icons.logout)),
-
+            IconButton(
+                onPressed: () {
+                  auth.signOut().then((value) async {
+                    SharedPreferences sp =
+                        await SharedPreferences.getInstance();
+                    sp.clear();
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const SelectRole()));
+                  }).onError((error, stackTrace) {
+                    utils().toastMessage(error.toString());
+                  });
+                },
+                icon: const Icon(Icons.logout)),
           ],
         ),
         drawer: Drawer(
@@ -54,61 +61,67 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> {
               ListTile(
                 leading: const Icon(Icons.person),
                 title: const Text('Profile'),
-                onTap: (){
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => const ProfileScreen()));
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const ProfileScreen()));
                 },
               ),
-
+              ListTile(
+                leading: const Icon(Icons.list),
+                title: const Text('Shared Food'),
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const DonorSharedFoodScreen()));
+                },
+              ),
             ],
           ),
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Center(
-            child:  Padding(
+            child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Column(
-                  children: [
-                    Container(
-                      width: 190,
-                      height: 190,
-                      child: const Image(image: AssetImage('assets/001.png')),
-
-                    ),
-                    const SizedBox(
-                      height: 25,
-                    ),
-                    const Center(
-                      child: Text(' If you have extra food share it  with \n       other who are in need of it.',
-                        style: TextStyle(
-                            fontSize: 20,
-                            fontFamily: 'Rubik Regular',
-                            color: Colors.black
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    InkWell(
-                      onTap: (){
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context)=>const ShareFood()));
-                      },
-                      child: Button(title: 'SHARE MY FOOD'),
-                    ),
-                    const SizedBox(
-                      height: 30,
-                    ),
-
-
-                  ]
-              ),
+              child: Column(children: [
+                Container(
+                  width: 190,
+                  height: 190,
+                  child: const Image(image: AssetImage('assets/001.png')),
+                ),
+                const SizedBox(
+                  height: 25,
+                ),
+                const Center(
+                  child: Text(
+                    ' If you have extra food share it  with \n       other who are in need of it.',
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontFamily: 'Rubik Regular',
+                        color: Colors.black),
+                  ),
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const ShareFood()));
+                  },
+                  child: const Button(title: 'SHARE MY FOOD'),
+                ),
+                const SizedBox(
+                  height: 30,
+                ),
+              ]),
             ),
           ),
-        )
-
-    );
+        ));
   }
 }

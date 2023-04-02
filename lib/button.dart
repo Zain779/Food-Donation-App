@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 class Button extends StatelessWidget {
   final String title;
-  Button({Key? key, required this.title}) : super(key: key);
+  const Button({Key? key, required this.title}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -9,12 +9,12 @@ class Button extends StatelessWidget {
       height: 50,
       width: 300,
       decoration: BoxDecoration(
-        color: Color(0xfff6943ba),
+        color: const Color(0xfff6943ba),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Center(
           child: Text( title ,
-            style: TextStyle(
+            style: const TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
                 fontFamily: 'Rubik Regular',

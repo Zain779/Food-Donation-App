@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:food_donation_app/FireStore%20Pratice/firestore_screen.dart';
 import 'package:food_donation_app/Utils/utils.dart';
@@ -215,8 +216,9 @@ class _AddDataFireStoreState extends State<AddDataFireStore> {
                                 'Address': addressController.text.toString(),
                                 'Zip': zipController.text.toString(),
                                 'Food Type': foodTypeController.text.toString(),
-                                'Quantity': quantityController.text.toString()
-
+                                'Quantity': quantityController.text.toString(),
+                                'giverId': FirebaseAuth.instance.currentUser?.uid,
+                                'status': 'shared',
 
 
                               }).then((value) {
