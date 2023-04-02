@@ -10,9 +10,9 @@ class FirestoreManager {
   }
 
   void startUpdateTimer() {
-    final intervalStream = createIntervalStream(const Duration(seconds: 5));
+    final intervalStream = createIntervalStream(const Duration(minutes: 15));
     intervalStream.listen((DateTime dateTime) async {
-      final fifteenMinutesAgo = dateTime.subtract(const Duration(seconds: 5));
+      final fifteenMinutesAgo = dateTime.subtract(const Duration(minutes: 15));
 
       final snapshot = await collectionRef
           .where('updatedAt', isLessThan: fifteenMinutesAgo)
