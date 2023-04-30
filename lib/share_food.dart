@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:food_donation_app/Donar/donor_home_screen.dart';
 import 'package:food_donation_app/Utils/utils.dart';
 import 'button.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/src/material/dropdown.dart';
 
 class ShareFood extends StatefulWidget {
   const ShareFood({Key? key}) : super(key: key);
@@ -15,6 +16,7 @@ class ShareFood extends StatefulWidget {
 }
 
 class _ShareFoodState extends State<ShareFood> {
+
   final auth = FirebaseAuth.instance;
   final nameController = TextEditingController();
   final emailController = TextEditingController();
@@ -25,6 +27,9 @@ class _ShareFoodState extends State<ShareFood> {
   final quantityController = TextEditingController();
   final databaseRef = FirebaseDatabase.instance.ref('Data');
 
+
+  List<String> items= <String>['Vegetable','Meat','Cocked Meal','Fruit','Other'];
+  String food_type='Vegetable';
   @override
   void initState() {
     emailController.text = auth.currentUser?.email ?? '';
@@ -192,11 +197,52 @@ class _ShareFoodState extends State<ShareFood> {
                           const SizedBox(
                             height: 10,
                           ),
-                          TextFormField(
-                            controller: foodTypeController,
+                          // TextFormField(
+                          //   controller: foodTypeController,
+                          //   decoration: InputDecoration(
+                          //     hintText: 'Food Type',
+                          //     fillColor: const Color(0xffF8F9FA),
+                          //     filled: true,
+                          //     prefixIcon: const Icon(
+                          //       Icons.food_bank_outlined,
+                          //       color: Color(0xff323F4B),
+                          //     ),
+                          //     focusedBorder: OutlineInputBorder(
+                          //       borderSide:
+                          //           const BorderSide(color: Color(0xffE4E7EB)),
+                          //       borderRadius: BorderRadius.circular(10),
+                          //     ),
+                          //     enabledBorder: OutlineInputBorder(
+                          //       borderSide:
+                          //           const BorderSide(color: Color(0xffE4E7EB)),
+                          //       borderRadius: BorderRadius.circular(10),
+                          //     ),
+                          //   ),
+                          // ),
+                          // const SizedBox(
+                          //   height: 10,
+                          // ),
+                          DropdownButtonFormField<String>(
+
+                            value: food_type,
+                              onChanged: (String?newValue){
+                              setState(() {
+                                food_type= newValue!;
+                              });
+                              },
+                              items: items.map<DropdownMenuItem<String>>(
+                                (String value){
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                }
+                              ).toList(),
                             decoration: InputDecoration(
                               hintText: 'Food Type',
-                              fillColor: const Color(0xffF8F9FA),
+                              fillColor:
+                              // Color(0xffF8F9FA),
+                              Colors.deepPurple.shade100,
                               filled: true,
                               prefixIcon: const Icon(
                                 Icons.food_bank_outlined,
@@ -204,15 +250,17 @@ class _ShareFoodState extends State<ShareFood> {
                               ),
                               focusedBorder: OutlineInputBorder(
                                 borderSide:
-                                    const BorderSide(color: Color(0xffE4E7EB)),
+                                const BorderSide(color: Color(0xffE4E7EB)),
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               enabledBorder: OutlineInputBorder(
                                 borderSide:
-                                    const BorderSide(color: Color(0xffE4E7EB)),
+                                const BorderSide(color: Color(0xffE4E7EB)),
                                 borderRadius: BorderRadius.circular(10),
                               ),
                             ),
+
+
                           ),
                           const SizedBox(
                             height: 10,
@@ -256,7 +304,8 @@ class _ShareFoodState extends State<ShareFood> {
                                     phoneNumberController.text.toString(),
                                 'address': addressController.text.toString(),
                                 'zip': zipController.text.toString(),
-                                'food_type': foodTypeController.text.toString(),
+                                // 'food_type': foodTypeController.text.toString(),
+                                'food_type':food_type,
                                 'quantity': quantityController.text.toString(),
                                 'giverId':
                                     FirebaseAuth.instance.currentUser?.uid,
@@ -274,29 +323,7 @@ class _ShareFoodState extends State<ShareFood> {
                                 utils().toastMessage(error.toString());
                               });
 
-                              // databaseRef.child(id).set({
-                              //   'id': id,
-                              //   'Name': nameController.text.toString(),
-                              //   'email': emailController.text.toString(),
-                              //   'Phone Number':
-                              //       phoneNumberController.text.toString(),
-                              //   'Address': addressController.text.toString(),
-                              //   'Zip': zipController.text.toString(),
-                              //   'Food Type': foodTypeController.text.toString(),
-                              //   'Quantity': quantityController.text.toString(),
-                              //   'giverId':
-                              //       FirebaseAuth.instance.currentUser?.uid,
-                              //   'status': 'shared',
 
-                              // SharedPreferences sp = await SharedPreferences.getInstance();
-                              // sp.setString('Name', nameController.text.toString());
-                              // sp.setString('email', emailController.text.toString());
-                              // sp.setString('Phone Number', phoneNumberController.text.toString());
-                              // sp.setString('Address', addressController.text.toString());
-                              // sp.setString('Zip', zipController.text.toString());
-                              // sp.setString('Food Type', foodTypeController.text.toString());
-                              // sp.setString('Quantity', quantityController.text.toString());
-                              // ignore: use_build_context_synchronously
                             },
                             child: const Button(title: 'Share With Other'),
                           ),

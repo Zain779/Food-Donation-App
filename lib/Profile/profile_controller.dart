@@ -1,8 +1,8 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:food_donation_app/Services/session_manager.dart';
 import 'package:food_donation_app/resources/color.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:image_picker/image_picker.dart';
 import 'package:food_donation_app/Utils/utils.dart';
@@ -14,7 +14,7 @@ import 'package:food_donation_app/Utils/utils.dart';
 
 class ProfileController with ChangeNotifier{
 
-  DatabaseReference ref =FirebaseDatabase.instance.ref().child('Data');
+  CollectionReference _users = FirebaseFirestore.instance.collection('users');
   firebase_storage.FirebaseStorage storage= firebase_storage.FirebaseStorage.instance;
 
   final nameController= TextEditingController();
@@ -70,16 +70,16 @@ class ProfileController with ChangeNotifier{
                       pickCameraImage(context);
                       Navigator.pop(context);
                     },
-                    leading: Icon(Icons.camera_alt,color: AppColors.primaryIconColor,),
-                    title: Text('Camera'),
+                    leading: const Icon(Icons.camera_alt,color: AppColors.primaryIconColor,),
+                    title: const Text('Camera'),
                   ),
                   ListTile(
                     onTap: (){
                       pickGalleryImage(context);
                       Navigator.pop(context);
                     },
-                    leading: Icon(Icons.image,color: AppColors.primaryIconColor,),
-                    title: Text('Gallery'),
+                    leading:const Icon(Icons.image,color: AppColors.primaryIconColor,),
+                    title:const Text('Gallery'),
                   ),
                 ],
               ),
@@ -99,7 +99,7 @@ class ProfileController with ChangeNotifier{
     await Future.value(uploadTask);
     final newUrl= await StorageRef.getDownloadURL();
 
-    ref.child(SessionController().userID.toString()).update({
+    _users.doc(SessionController().userID.toString()).update({
       'profile': newUrl.toString()
     }).then((value) => (){
       setLoading(false);
@@ -116,9 +116,9 @@ class ProfileController with ChangeNotifier{
     return showDialog(
         context: context,
         builder: (context){
-          nameController.text=name;
+          nameController.text= name;
           return AlertDialog(
-            title: Center(child: Text('Update UserName')),
+            title: const Center(child: Text('Update UserName')),
             content: SingleChildScrollView(
               child: Column(
                 children: [
@@ -144,8 +144,8 @@ class ProfileController with ChangeNotifier{
             ),
             actions: [
               TextButton(onPressed: (){
-                ref.child(SessionController().userID.toString()).update({
-                  'userName': nameController.text.toString()
+                _users.doc(SessionController().userID.toString()).update({
+                  'User Name': nameController.text.toString()
                 }).then((value) =>{
                   nameController.clear()
                 });
@@ -166,9 +166,9 @@ class ProfileController with ChangeNotifier{
     return showDialog(
         context: context,
         builder: (context){
-          nameController.text=phoneNumber;
+          phoneController.text=phoneNumber;
           return AlertDialog(
-            title: Center(child: Text('Update PhoneNumber')),
+            title: const Center(child: Text('Update PhoneNumber')),
             content: SingleChildScrollView(
               child: Column(
                 children: [
@@ -194,7 +194,7 @@ class ProfileController with ChangeNotifier{
             ),
             actions: [
               TextButton(onPressed: (){
-                ref.child(SessionController().userID.toString()).update({
+                _users.doc(SessionController().userID.toString()).update({
                   'phone': phoneController.text.toString()
                 }).then((value) =>{
                   phoneController.clear()

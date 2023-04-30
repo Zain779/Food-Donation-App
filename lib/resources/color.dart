@@ -13,7 +13,7 @@ class AppColors {
 
   static const Color primaryIconColor =  Color(0xff242424);
 
-  static const Color successColor =  Color(0xff04cd62);
+  static const Color successColor =  Color(0xff9e81db);
 
   static const Color iconBackgroundColor = Color(0xffdfdfe1);
   static const Color inputTextBorderColor =  Color.fromRGBO(19, 103, 33 , 1);

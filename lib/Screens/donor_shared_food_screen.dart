@@ -102,10 +102,10 @@ class FoodListTile extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                snap['name'],
-                style: Theme.of(context).textTheme.headline2,
-              ),
+              // Text(
+              //   snap['name'],
+              //   style: Theme.of(context).textTheme.headline2,
+              // ),
               Row(
                 children: [
                   Text(
@@ -118,6 +118,14 @@ class FoodListTile extends StatelessWidget {
                   Text(
                     snap['quantity'],
                     style: Theme.of(context).textTheme.headline6,
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  Text(
+                    snap['food_type'],
+                    style: Theme.of(context).textTheme.headline2,
                   ),
                 ],
               ),

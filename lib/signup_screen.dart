@@ -19,6 +19,7 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   final _formKey = GlobalKey<FormState>();
+  final userNameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
@@ -112,6 +113,35 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             )),
                       )
                     ],
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  TextFormField(
+                    controller: userNameController,
+                    decoration: InputDecoration(
+                      hintText: 'User Name',
+                      fillColor: const Color(0xffF8F9FA),
+                      filled: true,
+                      prefixIcon: const Icon(
+                        Icons.email_outlined,
+                        color: Color(0xff323F4B),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(color: Color(0xffE4E7EB)),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(color: Color(0xffE4E7EB)),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Enter username';
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(
                     height: 20,
@@ -211,27 +241,24 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         if (userType.isNotEmpty) {
                           _auth
                               .createUserWithEmailAndPassword(
-                                  email: emailController.text.toString(),
-                                  password: passwordController.text.toString())
-                              .then((UserCredential userCredential) {
-                            User? user = userCredential.user;
-                            assert(user?.uid != null);
-                            try {
-                              _users.add({
-                                'id': user?.uid,
-                                'email': user?.email,
-                                'type': userType,
-                              });
-                            } catch (e) {
-                              if (kDebugMode) {
-                                print(e.toString());
-                              }
-                            }
+                              email: emailController.text.toString(),
+                              password: passwordController.text.toString())
+                              .then((value) {
+                            _users.doc(value.user!.uid.toString()).set({
+                              'id': value.user!.uid,
+                              'email': value.user!.email,
+                              'type': userType,
+                              'phone': '',
+                              'OnlineStatus': 'NoOne',
+                              'profile': '',
+                              'User Name' : userNameController.text.toString(),
+                            });
 
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => userType == 'taker'
+                                    builder: (context) =>
+                                    userType == 'taker'
                                         ? ReceiverHomeScreen(true)
                                         : DonorHomeScreen(true)));
                           }).onError((error, stackTrace) {
@@ -243,6 +270,49 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         }
                       }
                     },
+
+                    // onTap: () async {
+                    //   if (_formKey.currentState!.validate()) {
+                    //     if (userType.isNotEmpty) {
+                    //       _auth
+                    //           .createUserWithEmailAndPassword(
+                    //               email: emailController.text.toString(),
+                    //               password: passwordController.text.toString())
+                    //           .then((UserCredential userCredential) {
+                    //         User? user = userCredential.user;
+                    //         assert(user?.uid != null);
+                    //         try {
+                    //           _users.add({
+                    //             'id': user?.uid,
+                    //             'email': user?.email,
+                    //             'type': userType,
+                    //             'phone': '',
+                    //             'OnlineStatus': 'NoOne',
+                    //             'profile': '',
+                    //             'User Name' : userNameController.text.toString(),
+                    //
+                    //           });
+                    //         } catch (e) {
+                    //           if (kDebugMode) {
+                    //             print(e.toString());
+                    //           }
+                    //         }
+                    //
+                    //         Navigator.push(
+                    //             context,
+                    //             MaterialPageRoute(
+                    //                 builder: (context) => userType == 'taker'
+                    //                     ? ReceiverHomeScreen(true)
+                    //                     : DonorHomeScreen(true)));
+                    //       }).onError((error, stackTrace) {
+                    //         utils().toastMessage(error.toString());
+                    //       });
+                    //     } else {
+                    //       utils().toastMessage(
+                    //           'Please select user type ( donate or taker )');
+                    //     }
+                    //   }
+                    // },
                     child: const Button(title: 'SignUp'),
                   ),
                   const SizedBox(
