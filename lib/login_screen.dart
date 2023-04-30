@@ -227,7 +227,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                 fontSize: 18,
                                 fontFamily: 'Rubik Regular',
                                 fontWeight: FontWeight.bold,
-                                color: Color(0xff6943ba)),
+                                color: Colors.black,
+                                // color: Color(0xff6943ba)
+
+                            ),
+                                // color: Color(0xff6943ba)),
                           ),
                         )
                       ],
