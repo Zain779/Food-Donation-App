@@ -4,6 +4,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 import 'package:food_donation_app/resources/color.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DonorSharedFoodScreen extends StatefulWidget {
   const DonorSharedFoodScreen({Key? key, this.isDonor = true})
@@ -34,8 +35,7 @@ class _DonorSharedFoodScreenState extends State<DonorSharedFoodScreen> {
                 .collection('food')
                 .where('takerId',
                     isEqualTo: FirebaseAuth.instance.currentUser?.uid)
-                .where('status', whereIn: ['reserved','taken'])
-                .snapshots(),
+                .where('status', whereIn: ['reserved', 'taken']).snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           final snap = snapshot.data?.docs;
           return !snapshot.hasData
@@ -134,7 +134,7 @@ class FoodListTile extends StatelessWidget {
           isDonor
               ? const SizedBox.shrink()
               : ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     FirebaseFirestore.instance
                         .collection('food')
                         .doc(snap['id'])
@@ -143,6 +143,9 @@ class FoodListTile extends StatelessWidget {
                       'takerId': FirebaseAuth.instance.currentUser?.uid,
                       'updatedAt': FieldValue.serverTimestamp()
                     });
+                    SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
+                    prefs.remove('lastSelectedTimestamp');
                   },
                   child: const Text('Release'))
         ],

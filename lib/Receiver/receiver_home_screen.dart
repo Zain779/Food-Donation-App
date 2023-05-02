@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
@@ -69,8 +70,10 @@ class _ReceiverHomeScreenState extends State<ReceiverHomeScreen> {
               leading: const Icon(Icons.person),
               title: const Text('Profile'),
               onTap: () {
-                Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const ProfileScreen()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const ProfileScreen()));
               },
             ),
             ListTile(
@@ -141,7 +144,8 @@ class _ReceiverHomeScreenState extends State<ReceiverHomeScreen> {
                                 itemBuilder: (context, index) {
                                   return PublicFoodListTile(
                                     snap: snap[index],
-                                    onPressed: () {  }, text: '',
+                                    onPressed: () {},
+                                    text: '',
                                   );
                                 },
                               );
@@ -499,57 +503,58 @@ class PublicFoodListTile extends StatefulWidget {
 }
 
 class _PublicFoodListTileState extends State<PublicFoodListTile> {
-    SharedPreferences? _prefs;
-    bool _canClickButton = false ;
- @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    _initPrefs();
-  }
+  Future<bool> canSelectFoodAgain() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int lastSelectedTimestamp = prefs.getInt('lastASelectedTimestamp') ?? 0;
+    int currentTimestamp = DateTime.now().millisecondsSinceEpoch;
+    int timeSinceLastSelection = currentTimestamp - lastSelectedTimestamp;
 
-  Future<void> _initPrefs() async {
-    _prefs = await SharedPreferences.getInstance();
-    _canClickButton = _canClickButtonToday();
-  }
-  bool _canClickButtonToday() {
-    final lastClickTimestamp = _prefs?.getInt('lastClickTimestamp') ?? 0;
-    final now = DateTime.now().millisecondsSinceEpoch;
-    final timeSinceLastClick = now - lastClickTimestamp;
-    final hoursSinceLastClick = (timeSinceLastClick / (1000 * 60 * 60)).floor();
-    return hoursSinceLastClick >= 24;
-  }
-  void _onClickButton() {
-    if (_canClickButton) {
-      widget.onPressed();
-      _prefs?.setInt('lastClickTimestamp', DateTime.now().millisecondsSinceEpoch);
-      setState(() {
-        _canClickButton = false;
+    if (timeSinceLastSelection < 86400000) {
+      utils().toastMessage('You can select food after 24 hours or after releasing the taken food.');
+      // 24 hours in milliseconds
+      return false; // User can't select food again yet
+    } else {
+      prefs.setInt('lastASelectedTimestamp', currentTimestamp);
+      FirebaseFirestore.instance
+          .collection('food')
+          .doc(widget.snap['id'])
+          .update({
+        'status': 'taken',
+        'takerId': FirebaseAuth.instance.currentUser?.uid,
+        'updatedAt': FieldValue.serverTimestamp()
       });
+      return true; // User can select food again
     }
   }
 
   @override
-
   Widget build(BuildContext context) {
-    Widget setImage(){
-      if(widget.snap['food_type']=='Fruit'){
-        return Image(image:
-        NetworkImage('https://images.unsplash.com/photo-1490474418585-ba9bad8fd0ea?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTd8fGZydWl0c3xlbnwwfHwwfHw%3D&auto=format&fit=crop&w=600&q=60'),fit: BoxFit.fitWidth,);
+    Widget setImage() {
+      if (widget.snap['food_type'] == 'Fruit') {
+        return const Image(
+          image: NetworkImage(
+              'https://images.unsplash.com/photo-1490474418585-ba9bad8fd0ea?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTd8fGZydWl0c3xlbnwwfHwwfHw%3D&auto=format&fit=crop&w=600&q=60'),
+          fit: BoxFit.fitWidth,
+        );
+      } else if (widget.snap['food_type'] == 'Vegetable') {
+        return const Image(
+          image: NetworkImage(
+              'https://media.istockphoto.com/id/1182467837/photo/vegan-gluten-free-creamy-spinach-pasta.jpg?b=1&s=170667a&w=0&k=20&c=fREssqwPW2Fl7qM4HhnOUa6QWCn8JHXqva6Uhkypoxk='),
+          fit: BoxFit.fitWidth,
+        );
+      } else if (widget.snap['food_type'] == 'Meat') {
+        return const Image(
+          image: NetworkImage(
+              'https://images.unsplash.com/photo-1527324688151-0e627063f2b1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8OXx8Zm9vZCUyMG1lYXR8ZW58MHx8MHx8&auto=format&fit=crop&w=600&q=60'),
+          fit: BoxFit.fitWidth,
+        );
+      } else {
+        return const Image(
+          image: NetworkImage(
+              'https://images.unsplash.com/photo-1606787366850-de6330128bfc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTB8fGZvb2R8ZW58MHx8MHx8&auto=format&fit=crop&w=600&q=60'),
+          fit: BoxFit.fitWidth,
+        );
       }
-      else if(widget.snap['food_type']=='Vegetable'){
-      return Image(image:
-      NetworkImage('https://media.istockphoto.com/id/1182467837/photo/vegan-gluten-free-creamy-spinach-pasta.jpg?b=1&s=170667a&w=0&k=20&c=fREssqwPW2Fl7qM4HhnOUa6QWCn8JHXqva6Uhkypoxk='),fit: BoxFit.fitWidth,);
-      }
-      else if(widget.snap['food_type']=='Meat'){
-        return Image(image:
-        NetworkImage('https://images.unsplash.com/photo-1527324688151-0e627063f2b1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8OXx8Zm9vZCUyMG1lYXR8ZW58MHx8MHx8&auto=format&fit=crop&w=600&q=60'),fit: BoxFit.fitWidth,);
-      }
-      else{
-      return Image(image:
-      NetworkImage('https://images.unsplash.com/photo-1606787366850-de6330128bfc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTB8fGZvb2R8ZW58MHx8MHx8&auto=format&fit=crop&w=600&q=60'),fit: BoxFit.fitWidth,);
-      }
-
     }
 
     return Container(
@@ -561,11 +566,9 @@ class _PublicFoodListTileState extends State<PublicFoodListTile> {
       child: Column(
         children: [
           setImage(),
-
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -596,22 +599,8 @@ class _PublicFoodListTileState extends State<PublicFoodListTile> {
                 ],
               ),
               ElevatedButton(
-                  onPressed: () {
-                    _onClickButton();
-                    FirebaseFirestore.instance
-                        .collection('food')
-                        .doc(widget.snap['id'])
-                        .update({
-
-                      'status': 'taken',
-                      'takerId': FirebaseAuth.instance.currentUser?.uid,
-                      'updatedAt': FieldValue.serverTimestamp()
-                    });
-                  },
-                  child:  Text(
-                      'Take'
-                      // _canClickButton==true ? widget.text : 'You can click again tomorrow'
-                  )),
+                  onPressed: canSelectFoodAgain,
+                  child: const Text( 'Take')),
               ElevatedButton(
                   onPressed: () {
                     FirebaseFirestore.instance
@@ -631,8 +620,3 @@ class _PublicFoodListTileState extends State<PublicFoodListTile> {
     );
   }
 }
-
-
-
-
-
